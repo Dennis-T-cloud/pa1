@@ -164,7 +164,7 @@ int32_t codepoint_at(char str[], int32_t cpi) {
             if (length == 1) {
                 codepoint = (unsigned char)str[index];
             } else if (length == 2) {
-                codepoint = ((unsigned char)str[index] & 0x1F) << 6; //* 2^6
+                codepoint = ((unsigned char)str[index] & 0x1F) << 6; //* 2^6 and so on
                 codepoint |= ((unsigned char)str[index + 1] & 0x3F);
             } else if (length == 3) {
                 codepoint = ((unsigned char)str[index] & 0x0F) << 12;
@@ -199,7 +199,7 @@ char is_animal_emoji_at(char str[], int32_t cpi) {
            (codepoint >= 0x1F9A0 && codepoint <= 0x1F9A7);
 }
 
-// helper function for is_animal_emoji() to convert utf8 to codepoint
+// a help function, findout utf8 to codepoint 
 int32_t utf8_to_codepoint(const char *str, int *length) {
     unsigned char byte = (unsigned char)str[0];
     int32_t codepoint = 0;
@@ -208,7 +208,7 @@ int32_t utf8_to_codepoint(const char *str, int *length) {
     if (*length == 1) {
         codepoint = byte;
     } else if (*length == 2) {
-        codepoint = (byte & 0x1F) << 6;
+        codepoint = (byte & 0x1F) << 6; //*2^6 and so on
         codepoint |= (str[1] & 0x3F);
     } else if (*length == 3) {
         codepoint = (byte & 0x0F) << 12;
@@ -229,23 +229,22 @@ int main() {
     char input[50];
     printf("Enter a UTF-8 encoded string: ");
     fgets(input, sizeof(input), stdin);
-
     input[strcspn(input, "\n")] = '\0'; 
     
     // Check if the string is ASCII
     printf("\nValid ASCII:%s\n", is_ascii(input)? "true" : "false");
 
-    // Capitalize ASCII characters
+    // Check Capitalize ASCII characters
     char uppercased[50];
     strcpy(uppercased, input);
     int32_t changes = capitalize_ascii(uppercased);
     printf("Uppercased ASCII: \"%s\"\nCharacters updated: %d\n", uppercased, changes);
 
-    // Length in bytes
+    //Check Length in bytes
     int byte_length = strlen(input);
     printf("Length in bytes: %d\n", byte_length);
 
-   // Number of code points
+   //Check Number of code points
     int codepoint_count = 0;
     int index = 0;
     while (input[index] != '\0') {
@@ -256,7 +255,7 @@ int main() {
     }
     printf("Number of code points: %d\n", codepoint_count);
 
-    // Bytes per code point
+    //Check Bytes per code point
     index = 0;
     printf("Bytes per code point: ");
     while (input[index] != '\0') {
@@ -268,12 +267,12 @@ int main() {
     printf("\n");
 
 
-    // Substring of the first 6 code points
+    //Cehck Substring of the first 6 code points
     char substring[50];
     utf8_substring(input, 0, 6, substring);
     printf("Substring of the first 6 code points: \"%s\"\n", substring);
 
-    // Code points as decimal numbers
+    //Cehck Code points as decimal numbers
     printf("Code points as decimal numbers: ");
     index = 0;
     while (input[index] != '\0') {
@@ -284,7 +283,7 @@ int main() {
     }
     printf("\n");
     
-    // Identify animal emojis
+    //Check Identify animal emojis
     int cpi = 0;
     index = 0;
     printf("Animal emojis: ");
