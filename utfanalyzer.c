@@ -192,7 +192,8 @@ For simplicity for this question, we will define that that the “animal emojii�
 in two ranges: from 🐀 to 🐿️ and from 🦀 to 🦮. (Yes, this technically includes things 
 like 🐽 which are only related to or part of an animal, and excludes a few things like 🙊, 😸, 
 which are animal faces.). You may find the wikipedia page on Unicode emoji helpful here. */
-bool is_animal_emoji(int32_t codepoint) {
+char is_animal_emoji_at(char str[], int32_t cpi) {
+    int32_t codepoint = codepoint_at(str, cpi);
     return (codepoint >= 0x1F400 && codepoint <= 0x1F43E) ||
            (codepoint >= 0x1F980 && codepoint <= 0x1F997) ||
            (codepoint >= 0x1F9A0 && codepoint <= 0x1F9A7);
@@ -284,15 +285,16 @@ int main() {
     printf("\n");
     
     // Identify animal emojis
+    int cpi = 0;
     index = 0;
     printf("Animal emojis: ");
     while (input[index] != '\0') {
-        int length;
-        int32_t codepoint = utf8_to_codepoint(&input[index], &length);
-        if (is_animal_emoji(codepoint)) {
+        int length = width_from_start_byte(input[index]);
+        if (is_animal_emoji_at(input, cpi)) {
             printf("%.*s ", length, &input[index]);
         }
         index += length;
+        cpi++;
     }
     printf("\n");
     return 0;
