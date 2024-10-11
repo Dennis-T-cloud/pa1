@@ -97,30 +97,6 @@ int32_t codepoint_index_to_byte_index(char str[], int32_t cpi){
     If cpi_start is greater than cpi_end or either is negative, the function should have no effect.
 */
 
-// issue code case:
-// void utf8_substring(char str[], int32_t cpi_start, int32_t cpi_end, char result[]){
-//     if ((cpi_start > cpi_end)||(cpi_start < 0)||(cpi_end<0)) {
-//         return;
-//     }
-//     int bi_index = 0;
-//     int result_index = 0;
-//     int length = 0 ;
-//     int count = 0;
-//     //move to the start cpi
-//     for(int i = 0; count < cpi_start; i+=width_from_start_byte(str[i])){
-//         length = width_from_start_byte(str[i]);
-//         bi_index += length;
-//         count ++;
-//     }
-
-//     for(int i = cpi_start; i< cpi_end; i++){
-//         for(int j = 0; j < length; j++){
-//             result[(result_index++)] =  str[(bi_index++)];
-//         }
-//     }
-//     result[result_index++] = '\0';
-// 
-
 
 void utf8_substring(char str[], int32_t cpi_start, int32_t cpi_end, char result[]) {
     // Check invalid input ranges
@@ -180,7 +156,7 @@ int32_t codepoint_at(char str[], int32_t cpi) {
     while (str[index] != '\0') {
         int length = width_from_start_byte(str[index]);
         if (length == -1) {
-            return -1; // Invalid UTF-8 sequence
+            return -1; 
         }
         
         if (current_cpi == cpi) {
@@ -253,6 +229,8 @@ int main() {
     printf("Enter a UTF-8 encoded string: ");
     fgets(input, sizeof(input), stdin);
 
+    input[strcspn(input, "\n")] = '\0'; 
+    
     // Check if the string is ASCII
     bool valid_ascii = is_ascii(input);
     printf("Valid ASCII: %s\n", valid_ascii ? "true" : "false");
