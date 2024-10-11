@@ -232,8 +232,7 @@ int main() {
     input[strcspn(input, "\n")] = '\0'; 
     
     // Check if the string is ASCII
-    bool valid_ascii = is_ascii(input);
-    printf("Valid ASCII: %s\n", valid_ascii ? "true" : "false");
+    printf("\nValid ASCII:%s\n", is_ascii(input)? "true" : "false");
 
     // Capitalize ASCII characters
     char uppercased[50];
@@ -245,18 +244,28 @@ int main() {
     int byte_length = strlen(input);
     printf("Length in bytes: %d\n", byte_length);
 
-    // Number of code points and bytes per code point
+   // Number of code points
     int codepoint_count = 0;
     int index = 0;
+    while (input[index] != '\0') {
+        int length;
+        utf8_to_codepoint(&input[index], &length);
+        index += length;
+        codepoint_count++;
+    }
+    printf("Number of code points: %d\n", codepoint_count);
+
+    // Bytes per code point
+    index = 0;
     printf("Bytes per code point: ");
     while (input[index] != '\0') {
         int length;
         utf8_to_codepoint(&input[index], &length);
         printf("%d ", length);
         index += length;
-        codepoint_count++;
     }
-    printf("\nNumber of code points: %d\n", codepoint_count);
+    printf("\n");
+
 
     // Substring of the first 6 code points
     char substring[50];
