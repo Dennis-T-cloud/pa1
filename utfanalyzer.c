@@ -273,6 +273,7 @@ int main() {
     printf("Substring of the first 6 code points: \"%s\"\n", substring);
 
     // Code points as decimal numbers
+    printf("Code points as decimal numbers: ");
     index = 0;
     while (input[index] != '\0') {
         int length;
@@ -280,9 +281,8 @@ int main() {
         printf("%d ", codepoint);
         index += length;
     }
-     printf("Code points as decimal numbers: %d\n", index);
-
-
+    printf("\n");
+    
     // Identify animal emojis
     index = 0;
     printf("Animal emojis: ");
