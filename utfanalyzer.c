@@ -64,7 +64,7 @@ int32_t utf8_strlen(char str[]){
     int index = 0;
     while( str[index] != '\0' ){
         int length = width_from_start_byte(str[index]);
-        if (width_from_start_byte(str[index]) != -1 ){    
+        if (length != -1 ){    
             index += length;     
             count ++ ;        
         }
@@ -164,7 +164,7 @@ int32_t codepoint_at(char str[], int32_t cpi) {
             if (length == 1) {
                 codepoint = (unsigned char)str[index];
             } else if (length == 2) {
-                codepoint = ((unsigned char)str[index] & 0x1F) << 6;
+                codepoint = ((unsigned char)str[index] & 0x1F) << 6; //* 2^6
                 codepoint |= ((unsigned char)str[index + 1] & 0x3F);
             } else if (length == 3) {
                 codepoint = ((unsigned char)str[index] & 0x0F) << 12;
