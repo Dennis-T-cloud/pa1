@@ -12,10 +12,10 @@ ASCII (e.g. all bytes are 127 or less). */
 int32_t is_ascii(char str[]){
     for(int i = 0; str[i] !='\0'; i++) {
         if (str[i]<0 || str[i] > 127 ) {
-            return 0;
+            return false;
         } 
     }
-    return 1;
+    return true;
 }
 
 /* int32_t capitalize_ascii(char str[])
@@ -172,19 +172,43 @@ void utf8_substring(char str[], int32_t cpi_start, int32_t cpi_end, char result[
 Takes a UTF-8 encoded string and a codepoint index, and returns a decimal representing 
 the codepoint at that index.
 */
-int32_t codepoint_at(char str[], int32_t cpi){
-    int length = 0 ;
-    int cpiNum = 0 ;
-    for(int i = 0; i< cpi ; i++){
-        length = width_from_start_byte(str[i]);
-        if (length != -1){
-        cpiNum += length;
+
+int32_t codepoint_at(char str[], int32_t cpi) {
+    int index = 0;
+    int current_cpi = 0;
+    
+    while (str[index] != '\0') {
+        int length = width_from_start_byte(str[index]);
+        if (length == -1) {
+            return -1; // Invalid UTF-8 sequence
         }
+        
+        if (current_cpi == cpi) {
+            int32_t codepoint = 0;
+            if (length == 1) {
+                codepoint = (unsigned char)str[index];
+            } else if (length == 2) {
+                codepoint = ((unsigned char)str[index] & 0x1F) << 6;
+                codepoint |= ((unsigned char)str[index + 1] & 0x3F);
+            } else if (length == 3) {
+                codepoint = ((unsigned char)str[index] & 0x0F) << 12;
+                codepoint |= ((unsigned char)str[index + 1] & 0x3F) << 6;
+                codepoint |= ((unsigned char)str[index + 2] & 0x3F);
+            } else if (length == 4) {
+                codepoint = ((unsigned char)str[index] & 0x07) << 18;
+                codepoint |= ((unsigned char)str[index + 1] & 0x3F) << 12;
+                codepoint |= ((unsigned char)str[index + 2] & 0x3F) << 6;
+                codepoint |= ((unsigned char)str[index + 3] & 0x3F);
+            }
+            return codepoint;
+        }
+        
+        index += length;
+        current_cpi++;
     }
-    return cpiNum;
+    
+    return -1; // Codepoint index out of range
 }
-
-
 /*char is_animal_emoji_at(char str[], int32_t cpi)
 Takes a UTF-8 encoded string and an codepoint index, and returns if the code point 
 at that index is an animal emoji.
@@ -278,5 +302,9 @@ int main() {
     }
     printf("\n");
 
+    char str[] = "Joséph";
+    int32_t idx = 4;
+    printf("Codepoint at %d in %s is %d\n", idx, str, codepoint_at(str, idx)); // 104
+    printf("Is 🔥 ASCII? %d\n", is_ascii("🔥"));
     return 0;
 }
