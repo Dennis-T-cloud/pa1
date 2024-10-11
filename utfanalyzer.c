@@ -23,11 +23,11 @@ Takes a UTF-8 encoded string and changes it in-place so that any ASCII
 lowercase characters a-z are changed to their uppercase versions. 
 Leaves all other characters unchanged. It returns the number of characters 
 updated from lowercase to uppercase.*/
-int32_t capitalize_ascii(char str[]){
-    int count = 0;
-    for (int i = 0; str[i]!='\0'; i++){
-        if (str[i] > 96 && str[i] < 123){
-            str[i] = str[i] - 32;
+int32_t capitalize_ascii(char str[]) {
+    int32_t count = 0;
+    for (int i = 0; str[i] != '\0'; i++) {
+        if ((unsigned char)str[i] <= 127 && islower(str[i])) {
+            str[i] = toupper(str[i]);
             count++;
         }
     }
@@ -279,10 +279,5 @@ int main() {
         index += length;
     }
     printf("\n");
-
-    char str[] = "Joséph";
-    int32_t idx = 4;
-    printf("Codepoint at %d in %s is %d\n", idx, str, codepoint_at(str, idx)); // 104
-    printf("Is 🔥 ASCII? %d\n", is_ascii("🔥"));
     return 0;
 }
