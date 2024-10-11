@@ -272,11 +272,18 @@ int main() {
     utf8_substring(input, 0, 6, substring);
     printf("Substring of the first 6 code points: \"%s\"\n", substring);
 
+    // Code points as decimal numbers
+    index = 0;
+    while (input[index] != '\0') {
+        int length;
+        int32_t codepoint = utf8_to_codepoint(&input[index], &length);
+        printf("%d ", codepoint);
+        index += length;
+    }
+     printf("Code points as decimal numbers: %d\n", index);
+
 
     // Identify animal emojis
-    index = 0;
-    printf("Code points as decimal numbers: %s\n", input);
-
     index = 0;
     printf("Animal emojis: ");
     while (input[index] != '\0') {
