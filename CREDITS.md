@@ -1,1 +1,1 @@
-Delete this line and add information about sources, collaborators, ChatGPT use, and so on. See course policies for more (https://ucsd-cse29.github.io/fa24/#assignments-and-academic-integrity)
+For Design question part 4, Cited info: Kevin Boone, "UTF-8 and the problem of over-long characters",  https://kevinboone.me/overlong.html

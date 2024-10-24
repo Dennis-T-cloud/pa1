@@ -35,7 +35,7 @@
     consistent, it's crucial to adhere strictly to standard encoding practices and flat-out reject those troublesome overlong 
     sequences. After all, we definitely don't want to open the door to unexpected vulnerabilities and the chaos they bring along.
     
-        Cited info: Kevin Boone, "UTF-8 and the problem of over-long characters",  https://kevinboone.me/overlong.html
+
 
 
 
