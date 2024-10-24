@@ -99,48 +99,35 @@ int32_t codepoint_index_to_byte_index(char str[], int32_t cpi){
 
 
 void utf8_substring(char str[], int32_t cpi_start, int32_t cpi_end, char result[]) {
+    int total_codepoints = utf8_strlen(str);
+    // check and modif the cpi_end if it exceeds
+    if (cpi_end > total_codepoints) {
+        cpi_end = total_codepoints;
+    }
     // Check invalid input ranges
     if (cpi_start < 0 || cpi_end < 0 || cpi_start >= cpi_end) {
         result[0] = '\0';
         return;
     }
 
-    int byte_index = 0;   
-    int current_cpi = 0;  
-    int start_byte_index = -1;
-    int end_byte_index = -1;
+    int byte_start = codepoint_index_to_byte_index(str, cpi_start);
+    int current_cpi = cpi_start;
+    int byte_index = byte_start;
 
-    while (str[byte_index] != '\0') {
+    while (current_cpi < cpi_end && str[byte_index] != '\0') {
         int length = width_from_start_byte(str[byte_index]);
         if (length == -1) {
-            result[0] = '\0'; 
+            result[0] = '\0'; //add end symbol
             return;
         }
 
-        if (current_cpi == cpi_start) {
-            start_byte_index = byte_index; 
-        }
-
-        if (current_cpi == cpi_end) {
-            end_byte_index = byte_index;
-            break;
-        }
+        // Copy the current character to the result
+        strncpy(&result[byte_index - byte_start], &str[byte_index], length);
         byte_index += length;
         current_cpi++;
     }
 
-    if (end_byte_index == -1 && current_cpi == cpi_end) {
-        end_byte_index = byte_index;
-    }
-    if (start_byte_index == -1 || end_byte_index == -1) {
-        result[0] = '\0';
-        return;
-    }
-
-    // Copy the substring from start to end
-    int substring_length = end_byte_index - start_byte_index;
-    strncpy(result, &str[start_byte_index], substring_length);
-    result[substring_length] = '\0'; // add null.
+    result[byte_index - byte_start] = '\0';
 }
 
 //unctions - Milestone 3
@@ -223,7 +210,45 @@ int32_t utf8_to_codepoint(const char *str, int *length) {
     
     return codepoint;
 }
+/*PA1 Resubmission:
+Takes a UTF-8 encoded string and a codepoint index. Calculates the codepoint 
+at that index. Then, calculates the code point with value one higher (so e.g. 
+for ”é“ U+00E9 that would be “ê” (U+00EA), and for “🐩” (U+1F429) that would be 
+“🐪” (U+1F42A)). Saves the encoding of that code point in the result array starting
+ at index 0.*/
 
+//helper function for next char: 
+void encode_codepoint_to_utf8(int32_t codepoint, char result[]) {
+    if (codepoint <= 0x7F) {
+        result[0] = codepoint;
+        result[1] = '\0';
+    } else if (codepoint <= 0x7FF) {
+        result[0] = 0xC0 | ((codepoint >> 6) & 0x1F);
+        result[1] = 0x80 | (codepoint & 0x3F);
+        result[2] = '\0';
+    } else if (codepoint <= 0xFFFF) {
+        result[0] = 0xE0 | ((codepoint >> 12) & 0x0F);
+        result[1] = 0x80 | ((codepoint >> 6) & 0x3F);
+        result[2] = 0x80 | (codepoint & 0x3F);
+        result[3] = '\0';
+    } else if (codepoint <= 0x10FFFF) {
+        result[0] = 0xF0 | ((codepoint >> 18) & 0x07);
+        result[1] = 0x80 | ((codepoint >> 12) & 0x3F);
+        result[2] = 0x80 | ((codepoint >> 6) & 0x3F);
+        result[3] = 0x80 | (codepoint & 0x3F);
+        result[4] = '\0';
+    }
+}
+void next_utf8_char(char str[], int32_t cpi, char result[]) {
+    int32_t codepoint = codepoint_at(str, cpi);
+    if (codepoint == -1) {
+        result[0] = '\0';
+        return;
+    }
+    int32_t next_codepoint = codepoint + 1;
+    //call the helper function
+    encode_codepoint_to_utf8(next_codepoint, result);
+}
 
 int main() {
     char input[50];
@@ -296,5 +321,12 @@ int main() {
         cpi++;
     }
     printf("\n");
+
+    // Check next 3 UTF-8 character
+    char next_char[10];
+    next_utf8_char(input, 3, next_char);
+    printf("Next Character of Codepoint at Index 3: %s\n", next_char);
+
+    return 0;
     return 0;
 }

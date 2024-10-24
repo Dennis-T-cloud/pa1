@@ -1,3 +1,15 @@
+# PA1-Resubmission Qeustion:
+    For 11100000 10000000 10100001: 
+        11100000 (1110 xxxx), indicates its a 3 byte UTF8 sequence
+        10000000 (10xx xxxx), is continuation byte.
+        10100001 (10xx xxxx), is continuation byte too, but have the info vaules (10 0001).
+    Thus: 
+        100001 binary -> 33 dec -> 21 hex
+    To combin these, the code point is 0x21, the character is "!".
+
+    The other ways to encode are : Decimal 
+    
+
 # PA1-Q1:
 
     UTF-8 encoding is more compact and has the advantage of saving storage space for big data compared to UTF-32. However, the variable storage length of characters makes access or query operations more complicated.
